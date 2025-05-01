@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const rootDir = require('./util/path');
 
 const errorController = require('./controllers/error');
+const db = require('./util/database');
 
 const app = express();
 
