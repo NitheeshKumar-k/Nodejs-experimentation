@@ -2,11 +2,11 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const rootDir = require('./util/path');
 
 const errorController = require('./controllers/error');
-const mongoConnect = require('./util/database').mongoConnect;
 
 const User = require('./models/user');
 
@@ -22,9 +22,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(rootDir, 'public')));
 
 app.use((req, res, next) => {
-    User.findById("681559dffacf7f7e52a5ef4b")
+    User.findById("6816a999525776b0cde0079d")
         .then(user => {
-            req.user = new User(user.name, user.email, user.cart, user._id);
+            req.user = user;
             next();
         })
         .catch(err => console.log(err));
@@ -35,9 +35,24 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoConnect(() => {
-    app.listen(3000);
-});
+mongoose.connect('mongodb+srv://admin-nitheesh:Nodepassword%401@cluster0.nrsskxl.mongodb.net/shop?retryWrites=true&w=majority&appName=Cluster0')
+    .then(() => {
+        User.findOne().then(user => {
+            if (!user) {
+                const user = new User({
+                    name: 'Nitheesh',
+                    email: 'test@test.com',
+                    cart: {
+                        items: []
+                    }
+                });
+                user.save();
+            }
+        });
+        app.listen(3000);
+    }).catch(err =>{
+        console.log(err);
+    })
 
 
 //For Sequelize
