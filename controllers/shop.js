@@ -7,8 +7,7 @@ exports.getProducts = (req, res, next) => {
             res.render('shop/product-list', {
                 pageTitle: 'All Products', 
                 prods: products, 
-                path: '/products',
-                isAuthenticated: req.session.isLoggedIn
+                path: '/products'
             });
         })
         .catch(err => console.log(err));
@@ -96,7 +95,7 @@ exports.postOrder = (req, res, next) => {
             });
             const order = new Order({
                 user: {
-                    name: req.user.name,
+                    email: req.user.email,
                     userId: req.user
                 },
                 products: products
